@@ -4,9 +4,10 @@
 
 class Player
 
-	def initialize(name)
+	def initialize(name, mark)
 		@name = name
 		@streak = 0
+		@mark = mark
 	end
 
 	def name
@@ -15,6 +16,10 @@ class Player
 
 	def streak
 		return(@streak)
+	end
+
+	def mark
+		return(@mark)
 	end
 
 	def update_streak()
