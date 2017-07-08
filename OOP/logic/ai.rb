@@ -5,6 +5,8 @@
 require_relative 'board'
 require_relative 'game_tree'
 
+# implements an ai opponent for tic tac toe game
+
 class AI
 	attr_reader :mark 
 
@@ -15,112 +17,55 @@ class AI
 		@player = opponent
 	end
 
-
+	# returns the best available move to maximize the outcome of a game
 	def move(board)
-		return minimax(@board, self)[1]
+		return self.minimax(@board, self)[1]
 	end
 
-	def minimax(game=@board, player)
-		possible_moves = game.get_available_positions
-		
-		best_move = -1;
-		best_score = (player == self) ? -10000 : 10000
-
-		if possible_moves == []
-			return [score(game), best_move]
-		
-		else
-			possible_moves.each do |move|
-				
-				possible_board = game.clone()
-				possible_board.place_mark(player.mark, move)
-
-				if player == self 		# ai is the maximizing player
-					score = minimax(possible_board, @player)[0]
-					
-					best_score = [score, best_score].max
-					best_move = move
-
-				else									# opponent is the minimizing player
-					score = minimax(possible_board, self)[0]
-					
-					best_score = [score, best_score].min
-					best_move = move
-
-				end
-			end
+	# returns a 2 item array where [0] is the best score for a given board
+	#	and [1] is the best move to take
+	def minimax(game, player)
+		if game.winning_condition?(self) || game.winning_condition?(@player)
+			return self.score(game)
 		end
 
-		return [best_score, best_move]
+		scores = []
+		moves = []
+		
+		game.get_available_positions.each do |move|
+			possible_game = game.clone()
+			possible_game.place_mark(player.mark, move) # generate new game states
+																									# based on available moves
+
+			# alternate between the player and the ai as new board states are 
+			# generated recursively
+
+			next_player = (player == self) ? @player : self	
+			scores.push(self.minimax(possible_game, next_player)[0])
+			moves.push(move)
+		end
+
+		if player == self 			# ai is the maximizing player
+			
+			max_score_index = scores.each_with_index.max[1]
+			return [scores[max_score_index], moves[max_score_index]]
+
+		else										# opponent is the minimizing player
+
+			min_score_index = scores.each_with_index.min[1]
+			return [scores[min_score_index], moves[min_score_index]]
+		
+		end
 	end
-	
+
 	def score(board)
-		score = 0
-
-		for i in (0..2) do
-			score += evaluate_line(board.get_row(i))
-			score += evaluate_line(board.get_column(i))
+		if board.winning_condition?(self)
+			return 10
+		elsif board.winning_condition?(@player)
+			return -10
 		end
-
-		score += evaluate_line(board.get_diagonal_1_to_9)
-		score += evaluate_line(board.get_diagonal_3_to_7)
-
-		return score
 	end
 
-	def evaluate_line(line)
-		score = 0
-		
-		# first cell in a line
-		if line[0] == self.mark
-			score = 1
-		elsif line[0] == @player.mark
-			score = -1
-		end
-
-		# second cell in a line
-		if line[1] == self.mark
-			if score == 1
-				score = 10
-			elsif score == -1
-				return 0
-			else
-				score = 1
-			end
-		
-		elsif line[1] == @player.mark
-			if score == -1
-				score = -10
-			elsif score == 1
-				return 0
-			else
-				score = -1
-			end
-		end
-
-		# third cell in a line
-		if line[2] == self.mark
-			if score > 0
-				score *= 10
-			elsif score < 0
-				return 0
-			else
-				score = 1
-			end
-
-		elsif line[2] == @player.mark
-			if score < 0
-				score *= 10
-			elsif score > 0
-				return 0
-			else
-				score = -1
-			end
-		end
-
-		return score
-	end
-	
 	# Method to construct whole game tree given a stating node
 	# deprecated due to requiring ~15mins to build whole tree
 	def construct_game_tree(node=@root, turn_order)
@@ -142,7 +87,7 @@ class AI
 		end
 
 		node.children.each do |child|
-			construct_game_tree(child, !turn_order)
+			self.construct_game_tree(child, !turn_order)
 		end
 		
 	end

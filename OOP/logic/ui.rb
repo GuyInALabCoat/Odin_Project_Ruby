@@ -2,10 +2,13 @@
 
 # File: ui.rb
 
+# class handles some of the console ui features of tic tac toe and 
+# gets user input necessary to setup the game
+
 class UI
 
 	def initialize()
-		intro()
+		self.intro()
 	end
 
 	def get_name()

@@ -2,6 +2,8 @@
 
 # File: board.rb
 
+# defines a game board object which represents a 3x3 game board
+
 class Board
 	
 	def initialize()
@@ -12,11 +14,12 @@ class Board
 		@board = Array.new(3) { Array.new(3, " ") }
 	end
 
+	# returns true if mark is placed, otherwise returns false
 	def place_mark(mark, position)
 		x = ((position - 0.1) / 3).truncate
 		y = (position - 1) % 3
 
-		if is_valid?(x, y)
+		if self.is_valid?(x, y)
 			@board[x][y] = mark
 			return true
 		else
@@ -24,6 +27,7 @@ class Board
 		end
 	end
 		
+	# prints the current state of the board
 	def print_board
 		print "\n"
 		(0..2).each do |row|
@@ -39,7 +43,7 @@ class Board
 		
 	def get_column(column_index)
 
-		if inside_board?(0, column_index)
+		if self.inside_board?(0, column_index)
 			column = []
 			(0..2).each {|row| column.push(@board[row][column_index])}
 			return column
@@ -47,7 +51,7 @@ class Board
 	end
 
 	def get_row(row_index)
-		if inside_board?(row_index, 0)
+		if self.inside_board?(row_index, 0)
 			return @board[row_index]
 		end
 	end
@@ -87,6 +91,8 @@ class Board
 		end
 	end
 
+	# defines equality between boards to be whenever two boards are in the same
+	# game state
 	def ==(other_board)
 		return @board[0] == other_board.get_row(0) && \
 					 @board[1] == other_board.get_row(1) && \
@@ -103,6 +109,7 @@ class Board
 		return hash_value
 	end
 
+	# returns a copy of the current board object
 	def clone
 		copy = Board.new()
 		
@@ -116,12 +123,13 @@ class Board
 		return copy
 	end
 
+	# returns an array of available spaces
 	def get_available_positions
 		positions = []
 		for i in (1..9) do
 			x = ((i - 0.1) / 3).truncate
 			y = (i - 1) % 3
-			if is_valid?(x, y)
+			if self.is_valid?(x, y)
 				positions.push(i)
 			end
 		end
