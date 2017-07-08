@@ -17,13 +17,14 @@ class AI
 
 
 	def move(board)
-		return minimax(@board, self, -1000000, 1000000)[1]
+		return minimax(@board, self)[1]
 	end
 
-	def minimax(game=@board, player, alpha, beta)
+	def minimax(game=@board, player)
 		possible_moves = game.get_available_positions
 		
 		best_move = -1;
+		best_score = (player == self) ? -10000 : 10000
 
 		if possible_moves == []
 			return [score(game), best_move]
@@ -35,45 +36,89 @@ class AI
 				possible_board.place_mark(player.mark, move)
 
 				if player == self 		# ai is the maximizing player
-					score = minimax(possible_board, @player, alpha, beta)[0]
+					score = minimax(possible_board, @player)[0]
 					
-					if score > alpha 
-						alpha = score
-						best_move = move
-					end
+					best_score = [score, best_score].max
+					best_move = move
 
 				else									# opponent is the minimizing player
-					score = minimax(possible_board, self, alpha, beta)[0]
+					score = minimax(possible_board, self)[0]
 					
-					if score < beta
-						beta = score
-						best_move = move
-					end
+					best_score = [score, best_score].min
+					best_move = move
+
 				end
-
-				if alpha >= beta then break end
-			end
-
-			if player == self
-				return [alpha, best_move]
-			else
-				return [beta, best_move]
 			end
 		end
+
+		return [best_score, best_move]
 	end
 	
-	private
-
 	def score(board)
-		
-		if board.winning_condition?(self)
-			return 10
-		elsif board.winning_condition?(@player)
-			return -10
-		else
-			return 0
+		score = 0
+
+		for i in (0..2) do
+			score += evaluate_line(board.get_row(i))
+			score += evaluate_line(board.get_column(i))
 		end
 
+		score += evaluate_line(board.get_diagonal_1_to_9)
+		score += evaluate_line(board.get_diagonal_3_to_7)
+
+		return score
+	end
+
+	def evaluate_line(line)
+		score = 0
+		
+		# first cell in a line
+		if line[0] == self.mark
+			score = 1
+		elsif line[0] == @player.mark
+			score = -1
+		end
+
+		# second cell in a line
+		if line[1] == self.mark
+			if score == 1
+				score = 10
+			elsif score == -1
+				return 0
+			else
+				score = 1
+			end
+		
+		elsif line[1] == @player.mark
+			if score == -1
+				score = -10
+			elsif score == 1
+				return 0
+			else
+				score = -1
+			end
+		end
+
+		# third cell in a line
+		if line[2] == self.mark
+			if score > 0
+				score *= 10
+			elsif score < 0
+				return 0
+			else
+				score = 1
+			end
+
+		elsif line[2] == @player.mark
+			if score < 0
+				score *= 10
+			elsif score > 0
+				return 0
+			else
+				score = -1
+			end
+		end
+
+		return score
 	end
 	
 	# Method to construct whole game tree given a stating node
