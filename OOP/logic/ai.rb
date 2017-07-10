@@ -24,8 +24,7 @@ class AI
 		return @choice
 	end
 
-	# returns a 2 item array where [0] is the best score for a given board
-	#	and [1] is the best move to take
+	# returns the best possible score that can be achieved given a startig board
 	def minimax(game, player, depth)
 		if game.over?(self, @player)
 			return self.score(game, depth)
