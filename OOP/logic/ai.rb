@@ -4,6 +4,7 @@
 
 require_relative 'board'
 require_relative 'game_tree'
+require 'pry'
 
 # implements an ai opponent for tic tac toe game
 
@@ -19,16 +20,18 @@ class AI
 
 	# returns the best available move to maximize the outcome of a game
 	def move(board)
-		return self.minimax(@board, self)[1]
+		self.minimax(board, self, 0)
+		return @choice
 	end
 
 	# returns a 2 item array where [0] is the best score for a given board
 	#	and [1] is the best move to take
-	def minimax(game, player)
-		if game.winning_condition?(self) || game.winning_condition?(@player)
-			return self.score(game)
+	def minimax(game, player, depth)
+		if game.over?(self, @player)
+			return self.score(game, depth)
 		end
-
+		
+		depth += 1
 		scores = []
 		moves = []
 		
@@ -40,29 +43,33 @@ class AI
 			# alternate between the player and the ai as new board states are 
 			# generated recursively
 
-			next_player = (player == self) ? @player : self	
-			scores.push(self.minimax(possible_game, next_player)[0])
+			next_player = (player == self) ? @player : self
+			scores.push(self.minimax(possible_game, next_player, depth))
 			moves.push(move)
 		end
 
 		if player == self 			# ai is the maximizing player
 			
 			max_score_index = scores.each_with_index.max[1]
-			return [scores[max_score_index], moves[max_score_index]]
+			@choice = moves[max_score_index]
+			return scores[max_score_index]
 
 		else										# opponent is the minimizing player
-
+			
+			#binding.pry
 			min_score_index = scores.each_with_index.min[1]
-			return [scores[min_score_index], moves[min_score_index]]
-		
+			@choice = moves[min_score_index]	
+			return scores[min_score_index]
 		end
 	end
 
-	def score(board)
+	def score(board, depth)
 		if board.winning_condition?(self)
-			return 10
+			return 10 - depth
 		elsif board.winning_condition?(@player)
-			return -10
+			return depth - 10
+		else
+			return 0
 		end
 	end
 

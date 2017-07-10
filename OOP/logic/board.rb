@@ -91,6 +91,15 @@ class Board
 		end
 	end
 
+	def over?(ai, player)
+		if self.get_available_positions == [] || self.winning_condition?(ai) ||
+		self.winning_condition?(player)
+			return true
+		else
+			return false
+		end
+	end
+
 	# defines equality between boards to be whenever two boards are in the same
 	# game state
 	def ==(other_board)
@@ -136,13 +145,13 @@ class Board
 		
 		return positions
 	end
+	
+	def inside_board?(x, y)
+		return (0..2) === x && (0..2) === y
+	end
 
 	private
 		
-		def inside_board?(x, y)
-			return (0..2) === x && (0..2) === y
-		end
-
 		def is_empty?(x, y)
 			return @board[x][y] == " "
 		end

@@ -8,7 +8,7 @@
 class UI
 
 	def initialize()
-		self.intro()
+		intro()
 	end
 
 	def get_name()
