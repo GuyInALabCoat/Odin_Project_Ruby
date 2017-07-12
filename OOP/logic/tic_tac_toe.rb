@@ -31,8 +31,10 @@ class TicTacToe
 				mark == 'X' ? @ai = AI.new('O', @player, @board) : @ai = AI.new('X',
 				@player, @board)
 	
-				print "\n"
-				puts "To play, you will need to input a number between 1 and 9 representing to locations on the grid with 1 being the top-left corner and 9 being the bottom right corner, decreasing from left to right\n"
+				puts "\nTo play, you will need to input a number between 1 and 9"
+				puts "representing to locations on the grid with 1 being the"
+				puts "top-left corner and 9 being the bottom right corner,"
+				puts "decreasing from left to right\n"
 	
 				self.run()
 
@@ -162,4 +164,4 @@ class TicTacToe
 		end
 end
 
-game = TicTacToe.new
+TicTacToe.new
