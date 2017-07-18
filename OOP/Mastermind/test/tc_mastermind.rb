@@ -4,6 +4,7 @@
 
 require_relative '../logic/mastermind.rb'
 require 'test/unit'
+require 'pry'
 
 class TestMastermind < Test::Unit::TestCase
 	
@@ -15,18 +16,10 @@ class TestMastermind < Test::Unit::TestCase
 		@game.generate_code()
 	end
 
-	def test_input
-	end
-
 	def test_compare_codes
 		@game.set_code('4152')
 		assert_equal(true, @game.guess('4152'))
+		assert_equal(false, @game.guess('4153'))
 	end
 
-	def test_feedback
-		@game.set_code('5133')
-		@game.guess('5313')
-		assert_equal(2, @game.correct)
-		assert_equal(2, @game.misplaced)
-	end
 end
