@@ -13,6 +13,7 @@ class Main
 	end
 
 	def run
+		win_flag = false
 		@mastermind.generate_code
 
 		while @turns > 0
@@ -25,6 +26,7 @@ class Main
 				puts "numbers from 1 to 6. Try again." 
 			
 			elsif @mastermind.guess(guess)
+				win_flag = true
 				break
 
 			else
@@ -33,9 +35,36 @@ class Main
 			end
 		end
 
-		puts "Congradulations, you won!"
+		if win_flag
+			game_won
+		else
+			game_lost
+		end
 	end
 
 	private
+		
+		def game_won
+			puts "Congratulations, you won!"
+			play_again
+		end
+
+		def game_lost
+			puts "Sorry, you were unable to break the code."
+			play_again
+		end
+
+		def play_again
+			puts "Care to play again? [yes | no]"
+
+			answer = gets.chomp.downcase
+
+			if answer == "yes"
+				@turns = 12
+				self.run
+			else
+				exit
+			end
+		end
 end
 Main.new
