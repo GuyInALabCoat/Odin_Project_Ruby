@@ -25,7 +25,7 @@ class Main
 
 		if user_input == "create"
 			player_sets_code
-			computer_guess
+			computer_guesses
 		else
 			@mastermind.generate_code
 			player_guesses
@@ -39,13 +39,17 @@ class Main
 			puts "between 1 and 6"
 
 			while user_input = gets.chomp
-				if user_input =~ /[1-6]{4}/
+				if valid_code(user_input)
 					@mastermind.set_code(user_input)
 					break
 				else
 					puts "Please enter a 4-digit code using the numbers 1-6"
 				end
 			end
+		end
+
+		def valid_code(input)
+			return input =~ /[1-6]{4}/
 		end
 
 		def player_guesses
@@ -56,17 +60,24 @@ class Main
 
 				guess = gets.chomp
 	
-				if guess.length != 4 || guess !~ /[1-6]{4}/
+				if !valid_code(guess)
 					puts "Your guess must be four digits long and only contain"
 					puts "numbers from 1 to 6. Try again." 
-			
-				elsif @mastermind.guess(guess)
-					win_flag = true
-					break
-
+				
 				else
-					@turns -= 1
-					puts "#{@turns} guesses remaining"
+					# Array: [0] = bool guess correct?, [1] # correct, [2] # misplaced
+					response = @mastermind.guess(guess)
+
+					if response[0]
+						win_flag = true
+						break
+
+					else
+						@turns -= 1
+						puts "#{response[1]} digits are correct"
+						puts "#{response[2]} digits are misplaced"
+						puts "#{@turns} guesses remaining"
+					end
 				end
 			end
 
