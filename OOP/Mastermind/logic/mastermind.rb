@@ -28,6 +28,8 @@ class Mastermind
 
 	private 
 		
+		# returns an array containing a boolean whether the full guess is correct
+		# and and the number of correct and misplaced digits
 		def compare_codes?(guess)
 			unmatched_code = []
 			unmatched_guess = []
@@ -52,10 +54,7 @@ class Mastermind
 					unmatched_code.delete_at(unmatched_code.index(guess))
 				end
 			end
-			
-			puts "#{correct} are correct"
-			puts "#{misplaced} are misplaced"
 
-			return (correct == @code.length)
+			return [correct == @code.length, correct, misplaced]
 		end
 end
