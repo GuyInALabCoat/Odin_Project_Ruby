@@ -5,6 +5,9 @@
 require_relative 'mastermind'
 require_relative 'ai'
 
+# Main class which handles user input and is the front-end interface for
+# the game logic
+
 class Main
 	
 	def initialize

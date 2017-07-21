@@ -2,6 +2,8 @@
 
 # File: mastermind.rb
 
+# main game logic that handles guess correctness and game setup
+
 class Mastermind
 	
 	def initialize
@@ -15,14 +17,14 @@ class Mastermind
 	end
 
 	def guess(guess)
-		guess = guess.split('')
-		guess.map! {|num| num.to_i}
+		guess = guess.split('')					# splits user guess string into array 
+		guess.map! {|num| num.to_i}			# of integers
 
 		return compare_codes?(guess)
 	end
 
 	def set_code(code)
-		@code = code.split('')
+		@code = code.split('')					
 		@code.map! {|num| num.to_i}
 	end
 

@@ -2,6 +2,8 @@
 
 # File: code.rb
 
+# helper class to handle the generation of codes from 1111 to 6666
+
 class Code
 	
 	def initialize(number)
