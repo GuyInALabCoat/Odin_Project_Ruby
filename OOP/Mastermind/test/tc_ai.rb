@@ -34,8 +34,13 @@ class	TestAI < Test::Unit::TestCase
 
 	def test_update_code_set
 		@game.set_code('1256')
-		@ai.generate_code_set
 		@ai.update_response(@game.guess(@ai.guess))
-		assert_equal(208, @ai.update_code_set)
+		assert_equal(208, @ai.reduce_code_set)
+	end
+
+	def test_ai_minimax
+		@game.set_code('1123')
+		@ai.update_response(@game.guess(@ai.guess))
+		assert_equal('1223', @ai.guess)
 	end
 end
