@@ -21,6 +21,7 @@ class AI
 				@guesses_made = true
 				@guess = '1122'
 				@set_S.delete('1122')
+				puts "The second guess may take some time. Please be patient."
 
 			elsif @set_S.length() == 1
 				@guess = @set_S[0]
@@ -32,6 +33,7 @@ class AI
 
 			end
 				
+			puts "Computer guesses #{@guess}"
 			return @guess
 		end
 

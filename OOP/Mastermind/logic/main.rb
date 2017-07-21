@@ -3,6 +3,7 @@
 # File: main.rb
 
 require_relative 'mastermind'
+require_relative 'ai'
 
 class Main
 	
@@ -85,24 +86,32 @@ class Main
 		end
 
 		def computer_guesses
+			ai = AI.new
 			win_flag = false
 
 			while @turns > 0
+				response = @mastermind.guess(ai.guess)
 
-				if @mastermind.guess(guess)
+				if response[0]
 					win_flag = true
 					break
 
 				else
 					@turns -= 1
+					ai.update_response(response)
+					puts "#{@turns} turns remaining"
 				end
 			end
-			check_win(win_flag)
+			check_win(win_flag, true)
 		end
 
-		def check_win(flag)
-			if flag
+		def check_win(flag, computer=false)
+			if flag && !computer
 				game_won
+			elsif flag && computer
+				game_won_computer
+			elsif !flag && computer
+				game_lost_computer
 			else
 				game_lost
 			end
@@ -115,6 +124,17 @@ class Main
 
 		def game_lost
 			puts "Sorry, you were unable to break the code."
+			play_again
+		end
+
+		def game_won_computer
+			puts "The computer has guessed your code."
+			play_again
+		end
+
+		def game_lost_computer
+			puts "Wow, your code was so great that even a computer wasn't able to
+			break it!"
 			play_again
 		end
 
